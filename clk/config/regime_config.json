@@ -1,0 +1,73 @@
+{
+  "input": {
+    "price_file": "data/prices_long.csv",
+    "market_file": "data/market_daily.csv",
+    "anomaly_file": "data/vendor_anomalies_long.csv"
+  },
+  "columns": {
+    "date": "date",
+    "cusip": "cusip",
+    "vendor": "vendor",
+    "price": "price",
+    "bucket": "bucket",
+    "weight": "weight",
+    "current_coupon": "current_coupon",
+    "ten_year_rate": "ten_year_rate",
+    "vix": "vix",
+    "anomaly_flag": "anomaly_flag",
+    "anomaly_score": "anomaly_score"
+  },
+  "vendors": ["VendorA", "VendorB", "VendorC"],
+  "manual_regimes": [
+    {
+      "name": "taper_tantrum",
+      "start": "2013-05-01",
+      "end": "2013-09-30"
+    },
+    {
+      "name": "covid_liquidity_stress",
+      "start": "2020-02-24",
+      "end": "2020-06-30"
+    },
+    {
+      "name": "inflation_fed_hiking_rate_shock",
+      "start": "2022-01-03",
+      "end": "2022-12-30"
+    },
+    {
+      "name": "regional_bank_stress",
+      "start": "2023-03-08",
+      "end": "2023-05-31"
+    }
+  ],
+  "regime": {
+    "rolling_window_days": 20,
+    "elevated_quantile": 0.75,
+    "stress_quantile": 0.90,
+    "gmm_components": 3,
+    "min_gmm_rows": 120
+  },
+  "nonparametric": {
+    "absolute_outlier_points": 1.0,
+    "robust_z_outlier_threshold": 3.0,
+    "stale_price_tolerance": 0.001
+  },
+  "anomaly_regime": {
+    "elevated_quantile": 0.75,
+    "stress_quantile": 0.90,
+    "smooth_window_days": 5,
+    "min_cusips_per_day": 10,
+    "merge_into_regimes_by_date": true
+  },
+  "state_space": {
+    "unit_col": "cusip",
+    "max_units": 50,
+    "min_observations": 150,
+    "reference_vendor": "VendorA",
+    "regime_column": "gmm_market_regime"
+  },
+  "output": {
+    "tables_dir": "output/tables",
+    "figures_dir": "output/figures"
+  }
+}
